@@ -1,0 +1,43 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+// tag::repositories[]
+repositories { 
+    mavenCentral() 
+}
+// end::repositories[]
+configurations {
+    // configuration that holds jars to include in the jar
+    extraLibs
+}
+// tag::jar[]
+jar {
+    manifest {
+        attributes 'Main-Class': 'cuong.tran.Main'
+    }
+
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    baseName = 'SEOToll'
+    version =  '0.1.1'
+}
+// end::jar[]
+
+// tag::dependencies[]
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile "joda-time:joda-time:2.2"
+    testCompile "junit:junit:4.12"
+    extraLibs 'org.jsoup:jsoup:1.10.3'
+    extraLibs group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+    configurations.compile.extendsFrom(configurations.extraLibs)
+}
+
+// end::dependencies[]
+
+// tag::wrapper[]
+// end::wrapper[]
